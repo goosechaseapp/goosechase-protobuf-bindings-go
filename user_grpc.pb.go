@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResult, error)
+	FindOneUser(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneUserResult, error)
 	FindMany(ctx context.Context, in *FindManyRequest, opts ...grpc.CallOption) (*FindManyResult, error)
 	SetDemoMode(ctx context.Context, in *SetDemoModeRequest, opts ...grpc.CallOption) (*SetDemoModeResult, error)
 	InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error)
@@ -36,9 +36,9 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResult, error) {
-	out := new(FindOneResult)
-	err := c.cc.Invoke(ctx, "/goosechase.data.user.UserService/FindOne", in, out, opts...)
+func (c *userServiceClient) FindOneUser(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneUserResult, error) {
+	out := new(FindOneUserResult)
+	err := c.cc.Invoke(ctx, "/goosechase.data.user.UserService/FindOneUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *userServiceClient) InviteUser(ctx context.Context, in *InviteUserReques
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	FindOne(context.Context, *FindOneRequest) (*FindOneResult, error)
+	FindOneUser(context.Context, *FindOneRequest) (*FindOneUserResult, error)
 	FindMany(context.Context, *FindManyRequest) (*FindManyResult, error)
 	SetDemoMode(context.Context, *SetDemoModeRequest) (*SetDemoModeResult, error)
 	InviteUser(context.Context, *InviteUserRequest) (*InviteUserResponse, error)
@@ -87,8 +87,8 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) FindOne(context.Context, *FindOneRequest) (*FindOneResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindOne not implemented")
+func (UnimplementedUserServiceServer) FindOneUser(context.Context, *FindOneRequest) (*FindOneUserResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindOneUser not implemented")
 }
 func (UnimplementedUserServiceServer) FindMany(context.Context, *FindManyRequest) (*FindManyResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindMany not implemented")
@@ -112,20 +112,20 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 	s.RegisterService(&UserService_ServiceDesc, srv)
 }
 
-func _UserService_FindOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_FindOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FindOneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).FindOne(ctx, in)
+		return srv.(UserServiceServer).FindOneUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/goosechase.data.user.UserService/FindOne",
+		FullMethod: "/goosechase.data.user.UserService/FindOneUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindOne(ctx, req.(*FindOneRequest))
+		return srv.(UserServiceServer).FindOneUser(ctx, req.(*FindOneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,8 +192,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindOne",
-			Handler:    _UserService_FindOne_Handler,
+			MethodName: "FindOneUser",
+			Handler:    _UserService_FindOneUser_Handler,
 		},
 		{
 			MethodName: "FindMany",

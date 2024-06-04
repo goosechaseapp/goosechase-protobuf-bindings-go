@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TenantServiceClient interface {
-	FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResult, error)
+	FindOneTenant(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneTenantResult, error)
 	CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...grpc.CallOption) (*CreateTenantResult, error)
 }
 
@@ -34,9 +34,9 @@ func NewTenantServiceClient(cc grpc.ClientConnInterface) TenantServiceClient {
 	return &tenantServiceClient{cc}
 }
 
-func (c *tenantServiceClient) FindOne(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneResult, error) {
-	out := new(FindOneResult)
-	err := c.cc.Invoke(ctx, "/goosechase.data.tenant.TenantService/FindOne", in, out, opts...)
+func (c *tenantServiceClient) FindOneTenant(ctx context.Context, in *FindOneRequest, opts ...grpc.CallOption) (*FindOneTenantResult, error) {
+	out := new(FindOneTenantResult)
+	err := c.cc.Invoke(ctx, "/goosechase.data.tenant.TenantService/FindOneTenant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *tenantServiceClient) CreateTenant(ctx context.Context, in *CreateTenant
 // All implementations must embed UnimplementedTenantServiceServer
 // for forward compatibility
 type TenantServiceServer interface {
-	FindOne(context.Context, *FindOneRequest) (*FindOneResult, error)
+	FindOneTenant(context.Context, *FindOneRequest) (*FindOneTenantResult, error)
 	CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResult, error)
 	mustEmbedUnimplementedTenantServiceServer()
 }
@@ -65,8 +65,8 @@ type TenantServiceServer interface {
 type UnimplementedTenantServiceServer struct {
 }
 
-func (UnimplementedTenantServiceServer) FindOne(context.Context, *FindOneRequest) (*FindOneResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindOne not implemented")
+func (UnimplementedTenantServiceServer) FindOneTenant(context.Context, *FindOneRequest) (*FindOneTenantResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindOneTenant not implemented")
 }
 func (UnimplementedTenantServiceServer) CreateTenant(context.Context, *CreateTenantRequest) (*CreateTenantResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTenant not implemented")
@@ -84,20 +84,20 @@ func RegisterTenantServiceServer(s grpc.ServiceRegistrar, srv TenantServiceServe
 	s.RegisterService(&TenantService_ServiceDesc, srv)
 }
 
-func _TenantService_FindOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _TenantService_FindOneTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FindOneRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TenantServiceServer).FindOne(ctx, in)
+		return srv.(TenantServiceServer).FindOneTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/goosechase.data.tenant.TenantService/FindOne",
+		FullMethod: "/goosechase.data.tenant.TenantService/FindOneTenant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TenantServiceServer).FindOne(ctx, req.(*FindOneRequest))
+		return srv.(TenantServiceServer).FindOneTenant(ctx, req.(*FindOneRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,8 +128,8 @@ var TenantService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TenantServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "FindOne",
-			Handler:    _TenantService_FindOne_Handler,
+			MethodName: "FindOneTenant",
+			Handler:    _TenantService_FindOneTenant_Handler,
 		},
 		{
 			MethodName: "CreateTenant",
